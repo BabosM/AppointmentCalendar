@@ -8,5 +8,6 @@ namespace AppointmentCalendar.Services
         List<DoctorVM> GetDoctorList();
 
         List<PatientVM> GetPatientList();
+
     }
 }
