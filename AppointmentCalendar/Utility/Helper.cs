@@ -20,5 +20,19 @@ namespace AppointmentCalendar.Utility
                 new SelectListItem{Value=Helper.Patient, Text=Helper.Patient}
             };      
         }
+        public static List<SelectListItem> getTimeDopDown()
+        {
+            var minutes = 60;
+            List<SelectListItem> duration = new List<SelectListItem>();
+
+            for (int i = 0; i < 12; i++) {
+                duration.Add(new SelectListItem { Value = minutes.ToString(), Text = i + " Hr" });
+                minutes = +30;
+                duration.Add(new SelectListItem{ Value = minutes.ToString(), Text = i + "Hr 30min"});
+                minutes = +30;
+            }
+
+            return duration;
+        }
     }
 }
