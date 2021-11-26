@@ -4,6 +4,7 @@ using AppointmentCalendar.Utility;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,35 @@ namespace AppointmentCalendar.Services
         public AppointmentService(ApplicationDbContext db)
         {
             _db = db;
+        }
+
+        public async Task<int> AddUpdate(AppointmentViewModel appointmentViewModel)
+        {
+            var startDate = DateTime.ParseExact(appointmentViewModel.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+           // var startDate = DateTime.Parse(appointmentViewModel.StartDate);
+            var endDate = DateTime.Parse(appointmentViewModel.EndDate).AddMinutes(Convert.ToDouble(appointmentViewModel.Duration));
+            if (appointmentViewModel != null && appointmentViewModel.Id > 0)
+            {
+                return 1;
+            }
+            else {
+                // add 
+                Appointment appointment = new Appointment()
+                {
+                    Title = appointmentViewModel.Title,
+                    Description = appointmentViewModel.Description,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Duration = appointmentViewModel.Duration,
+                    DoctorId = appointmentViewModel.DoctorId,
+                    PatientId = appointmentViewModel.PatientId,
+                    IsDoctorApproved = false,
+                    AdminId = appointmentViewModel.AdminId
+                };
+                _db.Appointments.Add(appointment);
+                await  _db.SaveChangesAsync();
+                return 2;
+            }
         }
 
         public List<DoctorVM> GetDoctorList()
