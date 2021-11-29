@@ -9,6 +9,6 @@ namespace AppointmentCalendar.Models.ViewModels
     {
         public int status { get; set; }
         public string message { get; set; }
-        public T dataenum { get; set; }
+        public T dataEnum { get; set; }
     }
 }

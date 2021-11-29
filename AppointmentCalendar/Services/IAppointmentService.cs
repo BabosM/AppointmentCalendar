@@ -9,12 +9,6 @@ namespace AppointmentCalendar.Services
         List<DoctorVM> GetDoctorList();
 
         List<PatientVM> GetPatientList();
-        public Task<int> AddUpdate(AppointmentVM appointmentViewModel);
-
-        public List<AppointmentVM> DoctorsEventsById(string doctorId);
-        public List<AppointmentVM> PatientsEventsById(string patientId);
-        public AppointmentVM GetById(int id);
-        
-        
+        public Task<int> AddUpdate(AppointmentViewModel appointmentViewModel);
     }
 }
