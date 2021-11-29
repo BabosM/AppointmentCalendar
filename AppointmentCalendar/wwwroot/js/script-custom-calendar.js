@@ -2,8 +2,7 @@
 $(document).ready(function () {
     $("#appointmentDate").kendoDateTimePicker({
         value: new Date(),
-        dateInput: false,
-        format: "MM/d/yyyy h:mm tt"
+        dateInput: false
     });
 
     InitializeCalendar();
@@ -36,7 +35,7 @@ function InitializeCalendar() {
                         success: function (response) {
                             var events = [];
                             if (response.status === 1) {
-                                $.each(response.dataEnum, function (i, data) {
+                                $.each(response.dataenum, function (i, data) {
                                     events.push({
                                         title: data.title,
                                         description: data.description,

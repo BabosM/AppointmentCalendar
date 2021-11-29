@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentCalendar.Models.ViewModels
 {
-    public class AppointmentViewModel
+    public class AppointmentVM
     {
         public int? Id { get; set; }
         public string Title { get; set; }

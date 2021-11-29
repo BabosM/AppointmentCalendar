@@ -30,56 +30,55 @@ namespace AppointmentCalendar.Controllers.Api
 
         [HttpPost]
         [Route("SaveCalendarData")]
-        public IActionResult SaveCalendarData(AppointmentViewModel viewModel)
+        public IActionResult SaveCalendarData(AppointmentVM data)
         {
             CommonResponse<int> commonResponse = new CommonResponse<int>();
             try
             {
-                commonResponse.status = _appointmentService.AddUpdate(viewModel).Result;
-
+                commonResponse.status = _appointmentService.AddUpdate(data).Result;
                 if (commonResponse.status == 1)
-                {
-                    commonResponse.message = Helper.appointmentAdded;
-                }
-                if (commonResponse.status == 2)
                 {
                     commonResponse.message = Helper.appointmentUpdated;
                 }
-
+                if (commonResponse.status == 2)
+                {
+                    commonResponse.message = Helper.appointmentAdded;
+                }
             }
-            catch (Exception ex) {
-                commonResponse.message = ex.Message;
+            catch (Exception e)
+            {
+                commonResponse.message = e.Message;
                 commonResponse.status = Helper.failure_code;
             }
-           return View();
+
+            return Ok(commonResponse);
         }
         [HttpGet]
         [Route("GetCalendarData")]
         public IActionResult GetCalendarData(string doctorId)
         {
-            CommonResponse<List<AppointmentViewModel>> commonResponse = new CommonResponse<List<AppointmentViewModel>>();
-
+            CommonResponse<List<AppointmentVM>> commonResponse = new CommonResponse<List<AppointmentVM>>();
             try
             {
                 if (role == Helper.Patient)
                 {
-                    commonResponse.dataEnum = _appointmentService.PatientsEventsById(loginUserId);
+                    commonResponse.dataenum = _appointmentService.PatientsEventsById(loginUserId);
                     commonResponse.status = Helper.success_code;
                 }
                 else if (role == Helper.Doctor)
                 {
-                    commonResponse.dataEnum = _appointmentService.DoctorEventsById(loginUserId);
+                    commonResponse.dataenum = _appointmentService.DoctorsEventsById(loginUserId);
                     commonResponse.status = Helper.success_code;
                 }
-                else {
-                    commonResponse.dataEnum = _appointmentService.DoctorEventsById(doctorId);
+                else
+                {
+                    commonResponse.dataenum = _appointmentService.DoctorsEventsById(doctorId);
                     commonResponse.status = Helper.success_code;
                 }
-                
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
-                commonResponse.message = ex.Message;
+                commonResponse.message = e.Message;
                 commonResponse.status = Helper.failure_code;
             }
             return Ok(commonResponse);
@@ -88,11 +87,11 @@ namespace AppointmentCalendar.Controllers.Api
         [Route("GetCalendarDataById/{id}")]
         public IActionResult GetCalendarDataById(int id)
         {
-            CommonResponse<AppointmentViewModel> commonResponse = new CommonResponse<AppointmentViewModel>();
+            CommonResponse<AppointmentVM> commonResponse = new CommonResponse<AppointmentVM>();
             try
             {
 
-                commonResponse.dataEnum = _appointmentService.GetById(id);
+                commonResponse.dataenum = _appointmentService.GetById(id);
                 commonResponse.status = Helper.success_code;
 
             }
@@ -103,5 +102,6 @@ namespace AppointmentCalendar.Controllers.Api
             }
             return Ok(commonResponse);
         }
+
     }
 }

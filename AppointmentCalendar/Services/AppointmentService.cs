@@ -20,7 +20,7 @@ namespace AppointmentCalendar.Services
             _db = db;
         }
 
-        public async Task<int> AddUpdate(AppointmentViewModel appointmentViewModel)
+        public async Task<int> AddUpdate(AppointmentVM appointmentViewModel)
         {
             var startDate = DateTime.ParseExact(appointmentViewModel.StartDate, "MM/d/yyyy h:mm tt", CultureInfo.InvariantCulture);
             var endDate = startDate.AddMinutes(Convert.ToDouble(appointmentViewModel.Duration));
@@ -48,38 +48,36 @@ namespace AppointmentCalendar.Services
             }
         }
 
-        public List<AppointmentViewModel> DoctorEventsById(string doctorId)
+        public List<AppointmentVM> DoctorsEventsById(string doctorId)
         {
-            return _db.Appointments.Where(x => x.DoctorId == doctorId).ToList().Select(c => new AppointmentViewModel()
+            return _db.Appointments.Where(x => x.DoctorId == doctorId).ToList().Select(c => new AppointmentVM()
             {
                 Id = c.Id,
                 Description = c.Description,
-                StartDate = c.StartDate.ToString("MM/d/yyyy h:mm tt"),
-                EndDate = c.EndDate.ToString("MM/d/yyyy h:mm tt"),
+                StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 Title = c.Title,
                 Duration = c.Duration,
                 IsDoctorApproved = c.IsDoctorApproved
             }).ToList();
         }
 
-        public AppointmentViewModel GetById(int id)
+      public AppointmentVM GetById(int id)
         {
-           
-                return _db.Appointments.Where(x => x.Id == id).ToList().Select(c => new AppointmentViewModel()
-                {
-                    Id = c.Id,
-                    Description = c.Description,
-                    StartDate = c.StartDate.ToString("MM/d/yyyy h:mm tt"),
-                    EndDate = c.EndDate.ToString("MM/d/yyyy h:mm tt"),
-                    Title = c.Title,
-                    Duration = c.Duration,
-                    IsDoctorApproved = c.IsDoctorApproved,
-                    PatientId = c.PatientId,
-                    DoctorId = c.DoctorId,
-                    PatientName = _db.Users.Where(x => x.Id == c.PatientId).Select(x => x.Name).FirstOrDefault(),
-                    DoctorName = _db.Users.Where(x => x.Id == c.DoctorId).Select(x => x.Name).FirstOrDefault(),
-                }).SingleOrDefault();
-            
+            return _db.Appointments.Where(x => x.Id == id).ToList().Select(c => new AppointmentVM()
+            {
+                Id = c.Id,
+                Description = c.Description,
+                StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                Title = c.Title,
+                Duration = c.Duration,
+                IsDoctorApproved = c.IsDoctorApproved,
+                PatientId = c.PatientId,
+                DoctorId = c.DoctorId,
+                PatientName = _db.Users.Where(x => x.Id == c.PatientId).Select(x => x.Name).FirstOrDefault(),
+                DoctorName = _db.Users.Where(x => x.Id == c.DoctorId).Select(x => x.Name).FirstOrDefault(),
+            }).SingleOrDefault();
         }
 
         public List<DoctorVM> GetDoctorList()
@@ -111,14 +109,14 @@ namespace AppointmentCalendar.Services
             return PatientVM;
         }
 
-        public List<AppointmentViewModel> PatientsEventsById(string patientId)
+        public List<AppointmentVM> PatientsEventsById(string patientId)
         {
-            return _db.Appointments.Where(x => x.PatientId == patientId).ToList().Select(c => new AppointmentViewModel()
+            return _db.Appointments.Where(x => x.PatientId == patientId).ToList().Select(c => new AppointmentVM()
             {
                 Id = c.Id,
                 Description = c.Description,
-                StartDate = c.StartDate.ToString("yyyy,MM,dd h:mm::ss tt"),
-                EndDate = c.EndDate.ToString("yyyy,MM,dd h:mm::ss tt"),
+                StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 Title = c.Title,
                 Duration = c.Duration,
                 IsDoctorApproved = c.IsDoctorApproved
