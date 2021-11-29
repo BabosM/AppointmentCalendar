@@ -10,5 +10,11 @@ namespace AppointmentCalendar.Services
 
         List<PatientVM> GetPatientList();
         public Task<int> AddUpdate(AppointmentViewModel appointmentViewModel);
+
+        public List<AppointmentViewModel> DoctorEventsById(string doctorId);
+        public List<AppointmentViewModel> PatientsEventsById(string patientId);
+        public AppointmentViewModel GetById(int id);
+        
+        
     }
 }

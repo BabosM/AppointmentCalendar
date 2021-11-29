@@ -22,9 +22,8 @@ namespace AppointmentCalendar.Services
 
         public async Task<int> AddUpdate(AppointmentViewModel appointmentViewModel)
         {
-            var startDate = DateTime.ParseExact(appointmentViewModel.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-           // var startDate = DateTime.Parse(appointmentViewModel.StartDate);
-            var endDate = DateTime.Parse(appointmentViewModel.EndDate).AddMinutes(Convert.ToDouble(appointmentViewModel.Duration));
+            var startDate = DateTime.ParseExact(appointmentViewModel.StartDate, "MM/d/yyyy h:mm tt", CultureInfo.InvariantCulture);
+            var endDate = startDate.AddMinutes(Convert.ToDouble(appointmentViewModel.Duration));
             if (appointmentViewModel != null && appointmentViewModel.Id > 0)
             {
                 return 1;
@@ -47,6 +46,40 @@ namespace AppointmentCalendar.Services
                 await  _db.SaveChangesAsync();
                 return 2;
             }
+        }
+
+        public List<AppointmentViewModel> DoctorEventsById(string doctorId)
+        {
+            return _db.Appointments.Where(x => x.DoctorId == doctorId).ToList().Select(c => new AppointmentViewModel()
+            {
+                Id = c.Id,
+                Description = c.Description,
+                StartDate = c.StartDate.ToString("MM/d/yyyy h:mm tt"),
+                EndDate = c.EndDate.ToString("MM/d/yyyy h:mm tt"),
+                Title = c.Title,
+                Duration = c.Duration,
+                IsDoctorApproved = c.IsDoctorApproved
+            }).ToList();
+        }
+
+        public AppointmentViewModel GetById(int id)
+        {
+           
+                return _db.Appointments.Where(x => x.Id == id).ToList().Select(c => new AppointmentViewModel()
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    StartDate = c.StartDate.ToString("MM/d/yyyy h:mm tt"),
+                    EndDate = c.EndDate.ToString("MM/d/yyyy h:mm tt"),
+                    Title = c.Title,
+                    Duration = c.Duration,
+                    IsDoctorApproved = c.IsDoctorApproved,
+                    PatientId = c.PatientId,
+                    DoctorId = c.DoctorId,
+                    PatientName = _db.Users.Where(x => x.Id == c.PatientId).Select(x => x.Name).FirstOrDefault(),
+                    DoctorName = _db.Users.Where(x => x.Id == c.DoctorId).Select(x => x.Name).FirstOrDefault(),
+                }).SingleOrDefault();
+            
         }
 
         public List<DoctorVM> GetDoctorList()
@@ -76,6 +109,20 @@ namespace AppointmentCalendar.Services
                                  Name = user.Name
                              }).ToList();
             return PatientVM;
+        }
+
+        public List<AppointmentViewModel> PatientsEventsById(string patientId)
+        {
+            return _db.Appointments.Where(x => x.PatientId == patientId).ToList().Select(c => new AppointmentViewModel()
+            {
+                Id = c.Id,
+                Description = c.Description,
+                StartDate = c.StartDate.ToString("yyyy,MM,dd h:mm::ss tt"),
+                EndDate = c.EndDate.ToString("yyyy,MM,dd h:mm::ss tt"),
+                Title = c.Title,
+                Duration = c.Duration,
+                IsDoctorApproved = c.IsDoctorApproved
+            }).ToList();
         }
     }
 }
