@@ -1,4 +1,5 @@
 using AppointmentCalendar.Controllers;
+using AppointmentCalendar.DbInitializer;
 using AppointmentCalendar.Models;
 using AppointmentCalendar.Services;
 using Microsoft.AspNetCore.Builder;
@@ -33,11 +34,18 @@ namespace AppointmentCalendar
             services.AddControllersWithViews();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDistributedMemoryCache();
+            services.AddScoped<IDbInitializer, DbInitializer.DbInitializer>();
+            services.AddSession(option => {
+                option.IdleTimeout = TimeSpan.FromDays(10);
+                option.Cookie.HttpOnly = true;
+                option.Cookie.IsEssential = true;
+            });
             services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -55,7 +63,8 @@ namespace AppointmentCalendar
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
+            dbInitializer.Initialize();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

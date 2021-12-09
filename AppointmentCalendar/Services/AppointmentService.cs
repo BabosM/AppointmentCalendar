@@ -21,11 +21,23 @@ namespace AppointmentCalendar.Services
         }
 
         public async Task<int> AddUpdate(AppointmentVM appointmentViewModel)
-        {
+         {
             var startDate = DateTime.ParseExact(appointmentViewModel.StartDate, "MM/d/yyyy h:mm tt", CultureInfo.InvariantCulture);
             var endDate = startDate.AddMinutes(Convert.ToDouble(appointmentViewModel.Duration));
             if (appointmentViewModel != null && appointmentViewModel.Id > 0)
             {
+                var appointment = _db.Appointments.FirstOrDefault(x => x.Id == appointmentViewModel.Id);
+
+                appointment.Title = appointmentViewModel.Title;
+                appointment.Description = appointmentViewModel.Description;
+                appointment.StartDate = startDate;
+                appointment.EndDate = endDate;
+                appointment.Duration = appointmentViewModel.Duration;
+                appointment.DoctorId = appointmentViewModel.DoctorId;
+                appointment.PatientId = appointmentViewModel.PatientId;
+                appointment.IsDoctorApproved = false;
+                appointment.AdminId = appointmentViewModel.AdminId;
+                await _db.SaveChangesAsync();
                 return 1;
             }
             else {
@@ -46,6 +58,28 @@ namespace AppointmentCalendar.Services
                 await  _db.SaveChangesAsync();
                 return 2;
             }
+        }
+
+        public async Task<int> ConfirmEvent(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(x => x.Id == id);
+            if (appointment != null) {
+                appointment.IsDoctorApproved = true;
+                return await _db.SaveChangesAsync();
+            }
+            return 0;
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(x => x.Id == id);
+            if (appointment != null)
+            {
+                _db.Appointments.Remove(appointment);
+                return await _db.SaveChangesAsync();
+                
+            }
+            return 0;
         }
 
         public List<AppointmentVM> DoctorsEventsById(string doctorId)
